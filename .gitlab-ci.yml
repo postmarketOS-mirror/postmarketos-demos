@@ -1,0 +1,22 @@
+---
+
+# global settings
+image: alpine:3.10
+stages:
+  - linter
+  - build
+
+clang-format-static:
+  stage: linter
+  allow_failure: true
+  before_script:
+    - apk -q add clang git
+  script:
+    - .gitlab-ci/static_clang-format.sh
+
+build:
+  stage: build
+  before_script:
+    - apk -q add alpine-sdk gtk+3.0-dev
+  script:
+    - make
