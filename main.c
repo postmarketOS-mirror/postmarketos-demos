@@ -29,10 +29,12 @@ static void onclick(GtkWidget *widget, gpointer command)
 	system((const char *)command);
 }
 
-void adjust_window_size(GtkWindow *window) {
+void adjust_window_size(GtkWindow *window)
+{
 	int width = DEFAULT_WINDOW_WIDTH;
 	int height = DEFAULT_WINDOW_HEIGHT;
 	GdkDisplay *display = gdk_display_get_default();
+	// clang-format off
 #ifdef GDK_WINDOWING_WAYLAND
 	if (GDK_IS_WAYLAND_DISPLAY(display)) {
 		GdkRectangle geometry;
@@ -40,8 +42,7 @@ void adjust_window_size(GtkWindow *window) {
 		gdk_monitor_get_geometry(monitor, &geometry);
 		width = (width < geometry.width) ? width : geometry.width;
 		height = (height < geometry.height) ? height : geometry.height;
-	}
-	else
+	} else
 #endif
 #ifdef GDK_WINDOWING_X11
 	if (GDK_IS_X11_DISPLAY(display)) {
@@ -54,10 +55,10 @@ void adjust_window_size(GtkWindow *window) {
 
 		if (height > max_height)
 			height = max_height;
-	}
-	else
+	} else
 #endif
 		g_error("Unsupported GDK backend");
+	// clang-format on
 
 	gtk_window_resize(window, width, height);
 }
@@ -97,7 +98,7 @@ static void activate(GtkApplication *app, gpointer user_data)
 		GtkWidget *button = gtk_button_new_with_label(title);
 		gtk_widget_set_size_request(button, 200, 70);
 		g_signal_connect(button, "clicked", G_CALLBACK(onclick),
-			(void *)command);
+				 (void *)command);
 		gtk_list_box_insert(GTK_LIST_BOX(list_box), button, -1);
 	}
 	adjust_window_size(GTK_WINDOW(window));
@@ -107,7 +108,7 @@ static void activate(GtkApplication *app, gpointer user_data)
 int main(int argc, char **argv)
 {
 	GtkApplication *app = gtk_application_new("org.postmarketos.demos",
-		G_APPLICATION_FLAGS_NONE);
+						  G_APPLICATION_FLAGS_NONE);
 	g_signal_connect(app, "activate", G_CALLBACK(activate), NULL);
 	int status = g_application_run(G_APPLICATION(app), argc, argv);
 	g_object_unref(app);
